@@ -3,7 +3,7 @@ import '@pnotify/core/dist/BrightTheme.css';
 import '@pnotify/core/dist/PNotify.css'
 import photoCard from './templates/photo-card.hbs';
 import Api from './api-server';
-const  basicLightbox  =  require ( 'basiclightbox' )
+const basicLightbox = require('basiclightbox')
 const { error } = require('@pnotify/core');
 var debounce = require('lodash.debounce');
 
@@ -21,13 +21,13 @@ primeryButton.addEventListener('click', onLoadMore)
 
 
 function createMarkup(e) {
-    
+
     e.preventDefault()
     gallery.innerHTML = ''
     api.query = e.currentTarget.elements.query.value;
-    
+
     if (api.query.length === 0) {
-         chrckClass()
+        chrckClass()
         error({
             text: "Enter something, please!",
             delay: 2000
@@ -40,21 +40,21 @@ function createMarkup(e) {
 
                 gallery.insertAdjacentHTML('beforeend', rez)
                 primeryButton.classList.replace('is-hidden', 'is-open')
-                
-                 if (rez.length === 0) {
+
+                if (rez.length === 0) {
                     chrckClass()
-                     error({
-                         text: "Nothing found!",
-                         delay: 2000
-                                    
-                     })
+                    error({
+                        text: "Nothing found!",
+                        delay: 2000
+
+                    })
                 }
-    })
-}
+            })
+    }
     clearInput()
 
 }
-    
+
 
 function onLoadMore(e) {
     e.preventDefault()
@@ -63,21 +63,26 @@ function onLoadMore(e) {
             .then(r => photoCard(r))
             .then((rez) => {
                 gallery.insertAdjacentHTML('beforeend', rez)
-                scrollTooPage()
+                console.log(gallery.scrollHeight);
+               window.scrollTo({
+    top: e.pageY,
+    left: 0,
+    behavior: 'smooth',
+  });
             })
+    }
 }
-}
-function scrollTooPage() {
-    const scroll = ((gallery.firstChild.clientHeight)*((api.page-2)*4))
-    window.scrollTo({
-        top: scroll,
-        left: 0,
-        behavior: 'smooth',
-    });
-}
+// function scrollTooPage() {
+//     const scroll = ((gallery.firstChild.clientHeight) * ((api.page - 2) * 4))
+//     window.scrollTo({
+//         top: scroll,
+//         left: 0,
+//         behavior: 'smooth',
+//     });
+// }
 
 function clearInput() {
-  inputForm.value = '';
+    inputForm.value = '';
 }
 function chrckClass() {
     if (primeryButton.classList.contains('is-open')) {
@@ -87,3 +92,4 @@ function chrckClass() {
         return
     }
 }
+console.log(1111);
