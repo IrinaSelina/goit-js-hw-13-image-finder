@@ -13,9 +13,12 @@ const inputForm = document.querySelector('.input-form')
 const searchForm = document.querySelector('.search-form')
 const gallery = document.querySelector('.gallery')
 
+
 const api = new Api()
+
 searchForm.addEventListener('submit', createMarkup)
 primeryButton.addEventListener('click', onLoadMore)
+
 
 function createMarkup(e) {
     
@@ -23,11 +26,8 @@ function createMarkup(e) {
     gallery.innerHTML = ''
     api.query = e.currentTarget.elements.query.value;
     
-    
     if (api.query.length === 0) {
-        if (primeryButton.classList.contains('is-open')) {
-            primeryButton.classList.replace('is-open', 'is-hidden')
-        }
+         chrckClass()
         error({
             text: "Enter something, please!",
             delay: 2000
@@ -36,12 +36,24 @@ function createMarkup(e) {
     if (api.query.length > 0) {
         api.fetchPhoto()
             .then(r => photoCard(r))
-            .then(rez => gallery.insertAdjacentHTML('beforeend', rez))
-        primeryButton.classList.replace('is-hidden', 'is-open')
-    }
-    clearInput()
+            .then((rez) => {
+
+                gallery.insertAdjacentHTML('beforeend', rez)
+                primeryButton.classList.replace('is-hidden', 'is-open')
+                
+                 if (rez.length === 0) {
+                    chrckClass()
+                     error({
+                         text: "Nothing found!",
+                         delay: 2000
+                                    
+                     })
+                }
+    })
 }
-    
+    clearInput()
+
+}
     
 
 function onLoadMore(e) {
@@ -49,16 +61,29 @@ function onLoadMore(e) {
     if (api.query.length > 0) {
         api.fetchPhoto()
             .then(r => photoCard(r))
-            .then(rez => gallery.insertAdjacentHTML('beforeend', rez))
-    }
+            .then((rez) => {
+                gallery.insertAdjacentHTML('beforeend', rez)
+                scrollTooPage()
+            })
+}
 }
 function scrollTooPage() {
+    const scroll = ((gallery.firstChild.clientHeight)*((api.page-2)*4))
     window.scrollTo({
-        top: 200,
+        top: scroll,
         left: 0,
         behavior: 'smooth',
     });
 }
+
 function clearInput() {
   inputForm.value = '';
+}
+function chrckClass() {
+    if (primeryButton.classList.contains('is-open')) {
+        primeryButton.classList.replace('is-open', 'is-hidden')
+    }
+    if (primeryButton.classList.contains('is-hidden')) {
+        return
+    }
 }
